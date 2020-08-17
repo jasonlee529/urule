@@ -3,3 +3,8 @@
 urule-console/target/
 urule-core/target/
 urule-springboot/target/
+**/.classpath
+**/.project
+**/.settings
+**/.idea
+**/target
