@@ -3,6 +3,10 @@
 urule-console/target/
 urule-core/target/
 urule-springboot/target/
-*.classpath
 **/node_modules
 **/LOG_PATH_IS_UNDEFINED
+**/.classpath
+**/.project
+**/.settings
+**/.idea
+**/target
