@@ -5,8 +5,10 @@ urule-core/target/
 urule-springboot/target/
 **/node_modules
 **/LOG_PATH_IS_UNDEFINED
+**/logs
 **/.classpath
 **/.project
 **/.settings
 **/.idea
 **/target
+**/package-lock.json

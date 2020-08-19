@@ -53,8 +53,8 @@
 <!--        &lt;!&ndash; 生产环境将请stdout,testfile去掉 &ndash;&gt;-->
 <!--        <appender-ref ref="STDOUT"/>-->
 <!--    </root>-->
-    <property name="name" value="nacos"/>
-    <property name="LOG_PATH" value="${LOG_PATH}"/>
+    <property name="name" value="urule-open"/>
+    <property name="LOG_PATH" value="logs"/>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -70,9 +70,9 @@
         </encoder>
     </appender>
     <!-- project default level -->
-    <logger name="com.bstek" level="info"/>
+    <logger name="com.bstek.urule" level="info"/>
     <!-- 定义根日志级别 -->
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="rollingFile"/>
         <appender-ref ref="console"/>
     </root>
