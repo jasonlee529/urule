@@ -8,4 +8,4 @@ if [ ! -z "$1" ] ; then
     profile=$1
 fi
 echo $profile
-nohup java -jar -Dspring.profiles.active=$profile security-server.jar > run.log 2>&1 &
+nohup java -jar -Dspring.profiles.active=$profile urule-springboot.jar > run.log 2>&1 &
