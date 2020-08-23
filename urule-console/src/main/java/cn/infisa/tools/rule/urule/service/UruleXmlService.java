@@ -17,23 +17,15 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class UruleXmlService implements InitializingBean, ApplicationContextAware {
-    private ApplicationContext applicationContext;
+public class UruleXmlService implements InitializingBean {
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+    @Autowired
+    private UruleXmlMapper mapper;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         log.info("start");
     }
-
-    @Autowired
-    private UruleXmlMapper mapper;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     public void saveFile(UruleXml xml) {
         mapper.insert(xml);
