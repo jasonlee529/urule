@@ -2,8 +2,10 @@ package cn.infisa.tools.rule.urule.mapper;
 
 import cn.infisa.tools.rule.urule.entity.UruleXml;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 @Mapper
+@Component
 public interface UruleXmlMapper {
     int deleteByPrimaryKey(Long id);
 

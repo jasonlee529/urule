@@ -70,9 +70,9 @@
         </encoder>
     </appender>
     <!-- project default level -->
-    <logger name="com.bstek.urule" level="info"/>
+    <logger name="com.bstek.urule" level="debug"/>
     <!-- 定义根日志级别 -->
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="rollingFile"/>
         <appender-ref ref="console"/>
     </root>

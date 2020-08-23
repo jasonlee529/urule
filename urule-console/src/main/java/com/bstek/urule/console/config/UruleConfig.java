@@ -1,4 +1,11 @@
-package com.bstek.urule.console.config;import lombok.extern.slf4j.Slf4j;
+package com.bstek.urule.console.config;
+
+import cn.infisa.tools.rule.urule.entity.UruleXml;
+import cn.infisa.tools.rule.urule.mapper.UruleXmlMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
@@ -13,4 +20,6 @@ import org.springframework.context.annotation.ImportResource;
 @Configuration
 @ImportResource({"classpath:context.xml"})
 public class UruleConfig {
+
+
 }
