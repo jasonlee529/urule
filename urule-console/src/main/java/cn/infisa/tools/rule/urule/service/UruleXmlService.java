@@ -38,4 +38,8 @@ public class UruleXmlService implements InitializingBean {
         xml.setType("");
         this.saveFile(xml);
     }
+
+    public UruleXml findByName(String name) {
+        return mapper.findByName(name);
+    }
 }

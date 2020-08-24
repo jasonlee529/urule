@@ -106,4 +106,10 @@
     where id = #{id,jdbcType=BIGINT}
 
     </update>
+    <select id="findByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from urule_xml
+        where name = #{name,jdbcType=VARCHAR}
+    </select>
 </mapper>

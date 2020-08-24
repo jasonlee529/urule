@@ -1,11 +1,9 @@
-CREATE TABLE `NewTable` (
-`id`  bigint(20) NOT NULL AUTO_INCREMENT ,
-`name`  varchar(200) NULL DEFAULT 文件名称 ,
-`type`  varchar(64) NULL DEFAULT 文件类型 ,
-`content`  longtext NULL COMMENT '文件内容' ,
-`gmt_created`  datetime NULL DEFAULT current_timestamp ,
-`gmt_modifiled`  datetime NULL DEFAULT current_timestamp ,
-PRIMARY KEY (`id`)
-)
-;
-
+ CREATE TABLE `urule_xml` (
+	`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT'id',
+	`name` VARCHAR ( 200 ) NULL COMMENT '文件名称',
+	`type` VARCHAR ( 64 ) NULL COMMENT '文件类型',
+	`content` LONGTEXT NULL COMMENT '文件内容',
+	`gmt_created` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	`gmt_modifiled` datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '修改时间',
+PRIMARY KEY ( `id` ) 
+);

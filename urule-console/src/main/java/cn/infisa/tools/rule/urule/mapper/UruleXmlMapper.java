@@ -2,6 +2,7 @@ package cn.infisa.tools.rule.urule.mapper;
 
 import cn.infisa.tools.rule.urule.entity.UruleXml;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 @Mapper
@@ -18,4 +19,6 @@ public interface UruleXmlMapper {
     int updateByPrimaryKeySelective(UruleXml record);
 
     int updateByPrimaryKey(UruleXml record);
+
+    UruleXml findByName(@Param("name") String name);
 }
