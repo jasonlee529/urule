@@ -4,12 +4,8 @@ import cn.infisa.tools.rule.urule.entity.UruleXml;
 import cn.infisa.tools.rule.urule.mapper.UruleXmlMapper;
 import com.bstek.urule.console.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,11 +24,18 @@ public class UruleXmlService implements InitializingBean {
     }
 
     public void saveFile(UruleXml xml) {
-        mapper.insert(xml);
+        if(xml.getId() ==null){
+            mapper.insert(xml);
+        }else{
+            mapper.updateByPrimaryKeySelective(xml);
+        }
     }
 
     public void saveFile(String file, String content, Boolean newVersion, String versionComment, User user) {
-        UruleXml xml = new UruleXml();
+        UruleXml xml = findByName(file);
+        if (xml == null) {
+            xml=new UruleXml();
+        }
         xml.setContent(content);
         xml.setName(file);
         xml.setType("");
