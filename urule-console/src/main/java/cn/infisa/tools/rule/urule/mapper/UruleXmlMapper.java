@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Mapper
 @Component
 public interface UruleXmlMapper {
@@ -20,5 +22,7 @@ public interface UruleXmlMapper {
 
     int updateByPrimaryKey(UruleXml record);
 
-    UruleXml findByName(@Param("name") String name);
+    List<UruleXml> findByName(@Param("name") String name);
+
+    List<UruleXml> findByNameAndVersion(@Param("name") String name, @Param("version")String version);
 }

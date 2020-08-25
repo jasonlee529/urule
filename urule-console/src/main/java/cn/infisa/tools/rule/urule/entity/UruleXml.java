@@ -27,4 +27,8 @@ public class UruleXml {
     * 文件内容
     */
     private String content;
+    /**
+     * 版本
+     */
+    private String version;
 }
