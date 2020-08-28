@@ -102,8 +102,8 @@ public class PackageServletHandler extends RenderPageServletHandler {
 			resp.setCharacterEncoding("utf-8");
 			Template template=ve.getTemplate("html/package-editor.html","utf-8");
 			PrintWriter writer=resp.getWriter();
-			template.merge(context, writer);
-			writer.close();
+			template.merge(context, writer);writer.close();
+
 		}
 	}
 	public void loadPackages(HttpServletRequest req, HttpServletResponse resp) throws Exception {

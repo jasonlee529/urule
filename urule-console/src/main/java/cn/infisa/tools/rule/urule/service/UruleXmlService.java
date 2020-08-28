@@ -4,6 +4,7 @@ import cn.infisa.tools.rule.urule.entity.UruleXml;
 import cn.infisa.tools.rule.urule.mapper.UruleXmlMapper;
 import com.bstek.urule.Utils;
 import com.bstek.urule.console.User;
+import com.bstek.urule.model.ExposeAction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -56,7 +57,7 @@ public class UruleXmlService implements InitializingBean {
         this.saveFile(xml);
     }
 
-
+    @ExposeAction(value="测试Int")
     public List<UruleXml> findByName(String name) {
         return mapper.findByName(name);
     }
