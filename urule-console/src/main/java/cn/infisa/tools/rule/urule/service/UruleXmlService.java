@@ -36,7 +36,7 @@ public class UruleXmlService implements InitializingBean {
         }
     }
 
-    public void saveFile(String file, String content, Boolean newVersion, String versionComment, User user) {
+    public UruleXml saveFile(String file, String content, Boolean newVersion, String versionComment, User user) {
         file = Utils.decodeURL(file);
         UruleXml xml = new UruleXml();
         List<UruleXml> xmls = mapper.findByName(file);
@@ -47,13 +47,14 @@ public class UruleXmlService implements InitializingBean {
             xml.setId(null);
             xml.setVersion(VersionUtils.newVersion(xml.getVersion()));
         }
-        if(StringUtils.isBlank(xml.getVersion())){
+        if (StringUtils.isBlank(xml.getVersion())) {
             xml.setVersion(VersionUtils.newVersion(""));
         }
         xml.setContent(content);
         xml.setName(file);
         xml.setType("");
         this.saveFile(xml);
+        return xml;
     }
 
 

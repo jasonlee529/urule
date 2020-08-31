@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.bstek.urule.console.servlet.common;
 
+import cn.infisa.tools.rule.urule.entity.UruleXml;
 import cn.infisa.tools.rule.urule.service.UruleXmlService;
 import com.bstek.urule.RuleException;
 import com.bstek.urule.Utils;
@@ -48,9 +49,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
+import static com.bstek.urule.console.config.HttpUtils.doPostForm;
+import static com.bstek.urule.console.config.UruleContants.KM_SERVER;
 
 /**
  * @author Jacky.gao
@@ -80,12 +82,32 @@ public class CommonServletHandler extends RenderPageServletHandler {
         String versionComment = req.getParameter("versionComment");
         Boolean newVersion = Boolean.valueOf(req.getParameter("newVersion"));
         User user = EnvironmentUtils.getLoginUser(new RequestContext(req, resp));
+        UruleXml xml;
         try {
             repositoryService.saveFile(file, content, newVersion, versionComment, user);
-            uruleXmlService.saveFile(file, content, newVersion, versionComment, user);
+            xml = uruleXmlService.saveFile(file, content, newVersion, versionComment, user);
         } catch (Exception ex) {
             throw new RuleException(ex);
         }
+        // post请求知识库服务, 根据项目名称区分ip地址
+        String kmServerAddress = findKmServerByName(xml.getName());
+        if (kmServerAddress == null) {
+            return;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", xml.getName());
+        data.put("content", xml.getContent());
+        data.put("version", xml.getVersion());
+        doPostForm(kmServerAddress + "/rule/urule/update", data);
+    }
+
+    private static String findKmServerByName(String name) {
+        String[] nameList = name.split("/");
+        if (nameList.length < 2) {
+            return null;
+        }
+
+        return KM_SERVER.get(nameList[1]);
     }
 
     public void loadReferenceFiles(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -585,6 +585,7 @@ public class PackageServletHandler extends RenderPageServletHandler {
 			}
 			if(obj instanceof Map && !(obj instanceof GeneralEntity)){
 				obj=session.getParameters();
+
 			}
 			for(Variable var:vc.getVariables()){
 				buildVariableValue(obj, var);
