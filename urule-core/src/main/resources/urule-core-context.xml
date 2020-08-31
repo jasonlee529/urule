@@ -112,6 +112,7 @@
 	<bean id="urule.listAction" class="com.bstek.urule.runtime.builtinaction.ListAction"></bean>
 	<bean id="urule.mapAction" class="com.bstek.urule.runtime.builtinaction.MapAction"></bean>
 	<bean id="urule.loopAction" class="com.bstek.urule.runtime.builtinaction.LoopAction"></bean>
+	<bean id="urule.medicalAction" class="com.bstek.urule.runtime.builtinaction.MedicalAction"></bean>
 
 	<bean id="urule.cacheUtils" class="com.bstek.urule.runtime.cache.CacheUtils"></bean>
 	
