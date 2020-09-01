@@ -34,6 +34,7 @@ import com.bstek.urule.model.library.action.ActionLibrary;
 import com.bstek.urule.model.library.action.SpringBean;
 import com.bstek.urule.parse.deserializer.*;
 import com.bstek.urule.runtime.BuiltInActionLibraryBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.apache.commons.lang.StringUtils;
@@ -58,6 +59,7 @@ import static com.bstek.urule.console.config.UruleContants.KM_SERVER;
  * @author Jacky.gao
  * @since 2016年7月25日
  */
+@Slf4j
 public class CommonServletHandler extends RenderPageServletHandler {
     private RepositoryService repositoryService;
     private UruleXmlService uruleXmlService;
@@ -98,6 +100,7 @@ public class CommonServletHandler extends RenderPageServletHandler {
         data.put("name", xml.getName());
         data.put("content", xml.getContent());
         data.put("version", xml.getVersion());
+        log.warn("发送规则保存请求, 地址为: " + kmServerAddress + "/rule/urule/update");
         doPostForm(kmServerAddress + "/rule/urule/update", data);
     }
 
