@@ -10,7 +10,7 @@ import java.math.*;
  * @version 1.0
  * @date 2020/8/31 下午3:54
  */
-@ActionBean(name="医用函数")
+@ActionBean(name="医用方法")
 public class MedicalAction {
     @ActionMethod(name="求BMI(身体质量指数)")
     @ActionMethodParameter(names={"身高(米/m)","体重(千克/kg)"})

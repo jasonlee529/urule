@@ -39,6 +39,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Row;
@@ -275,8 +276,28 @@ public class PackageServletHandler extends RenderPageServletHandler {
 		KnowledgeBase knowledgeBase= buildKnowledgeBase(req);
 		KnowledgePackage knowledgePackage=knowledgeBase.getKnowledgePackage();
 		CacheUtils.getKnowledgeCache().putKnowledge(packageId, knowledgePackage);
-		Map<String,Object> map=new HashMap<String,Object>();
+		Map<String,Object> map=new 	HashMap<String,Object>();
 		writeObjectToJson(resp, map);
+	}
+
+	/**
+	 * 改造重加载接口, 测试中(@JsonIgnore问题)
+	 * @param req
+	 * @param resp
+	 * @throws Exception
+	 */
+	public void buildKnowledgeCache(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		String project=req.getParameter("project");
+		project=Utils.decodeURL(project);
+		String packageId=project+"/"+Utils.decodeURL(req.getParameter("packageId"));
+		if(packageId.startsWith("/")){
+			packageId=packageId.substring(1,packageId.length());
+		}
+		KnowledgeBase knowledgeBase= buildKnowledgeBase(req);
+		KnowledgePackage knowledgePackage=knowledgeBase.getKnowledgePackage();
+		Map<String,Object> map=new HashMap<String,Object>();
+		writeObjectToJson(resp, knowledgePackage);
+
 	}
 	
 	public void loadForTestVariableCategories(HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -537,7 +558,7 @@ public class PackageServletHandler extends RenderPageServletHandler {
 		Map<VariableCategory,Object> facts=new HashMap<VariableCategory,Object>();
 		for(VariableCategory vc:variableCategories){
 			String clazz=vc.getClazz();
-			Object entity=null;
+			Object entity;
 			if(vc.getName().equals(VariableCategory.PARAM_CATEGORY)){
 				entity=new HashMap<String,Object>();
 			}else{
@@ -564,7 +585,7 @@ public class PackageServletHandler extends RenderPageServletHandler {
 				session.insert(obj);				
 			}
 		}
-		ExecutionResponse response=null;
+		ExecutionResponse response ;
 		if(StringUtils.isNotEmpty(flowId)){
 			if(parameters!=null){
 				response=session.startProcess(flowId,parameters);
