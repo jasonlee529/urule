@@ -27,6 +27,7 @@ import com.bstek.urule.console.repository.RepositoryService;
 import com.bstek.urule.console.repository.model.FileType;
 import com.bstek.urule.console.servlet.RenderPageServletHandler;
 import com.bstek.urule.console.servlet.RequestContext;
+import com.bstek.urule.console.util.UpdateFileHttpHandler;
 import com.bstek.urule.dsl.RuleParserLexer;
 import com.bstek.urule.dsl.RuleParserParser;
 import com.bstek.urule.model.function.FunctionDescriptor;
@@ -52,8 +53,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import static com.bstek.urule.console.config.HttpUtils.doPostForm;
 import static com.bstek.urule.console.config.UruleContants.KM_SERVER;
+import static com.bstek.urule.console.util.HttpUtils.*;
 
 /**
  * @author Jacky.gao
@@ -100,17 +101,12 @@ public class CommonServletHandler extends RenderPageServletHandler {
         data.put("name", xml.getName());
         data.put("content", xml.getContent());
         data.put("version", xml.getVersion());
-        log.warn("发送规则保存请求, 地址为: " + kmServerAddress + "/rule/urule/update");
-        doPostForm(kmServerAddress + "/rule/urule/update", data);
-    }
-
-    private static String findKmServerByName(String name) {
-        String[] nameList = name.split("/");
-        if (nameList.length < 2) {
-            return null;
-        }
-
-        return KM_SERVER.get(nameList[1]);
+        // 改为异步回调远程请求
+        UpdateFileHttpHandler httpHandler = new UpdateFileHttpHandler(kmServerAddress + "/rule/urule/update", data);
+        new Thread(httpHandler, "异步线程 ["+data.get("name")+"] 回调知识库地址 : " + kmServerAddress + "/rule/urule/update")
+        .start();
+//        log.warn("发送规则保存请求, 地址为: " + kmServerAddress + "/rule/urule/update");
+//        doPostForm(kmServerAddress + "/rule/urule/update", data);
     }
 
     public void loadReferenceFiles(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

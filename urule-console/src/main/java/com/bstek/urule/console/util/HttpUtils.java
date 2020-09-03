@@ -1,4 +1,4 @@
-package com.bstek.urule.console.config;
+package com.bstek.urule.console.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.*;
@@ -17,6 +17,8 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+
+import static com.bstek.urule.console.config.UruleContants.KM_SERVER;
 
 /**
  * @author libo
@@ -110,5 +112,15 @@ public class HttpUtils {
             }
         }
         return result;
+    }
+
+
+    public static String findKmServerByName(String name) {
+        String[] nameList = name.split("/");
+        if (nameList.length < 2) {
+            return null;
+        }
+
+        return KM_SERVER.get(nameList[1]);
     }
 }
