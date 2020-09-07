@@ -23,6 +23,7 @@ public class KmUruleActionService {
     public String updateData(Map<String, Object> data){
         return "执行修改数据";
     }
+
     @ExposeAction("删除数据")
     public String deleteData(Map<String, Object> data){
         return "执行删除数据";

@@ -28,6 +28,12 @@ public class SubstanceTag implements Serializable {
     @Label("标签编码")
     private String code;
 
+    @Label("实例值")  // 标签对应的实例中的值
+    private String exampleValue;
+
+    @Label("实例编码")  // 标签对应的实例中的值
+    private String exampleCode;
+
 //    private String fieldName;
 
     /**
