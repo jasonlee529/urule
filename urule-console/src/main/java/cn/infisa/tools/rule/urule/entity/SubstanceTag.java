@@ -141,7 +141,8 @@ public class SubstanceTag implements Serializable {
     /**
      * 对应实体
      */
-//    private Long substanceId;
+    @Label("实体类型")
+    private Long substanceId;
 
     /**
      * 是否需要排重处理

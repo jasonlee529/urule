@@ -136,7 +136,8 @@ public class RelationTag implements Serializable {
     /**
      * 关联关系标签, 用于限定后项实体
      */
-//    private Long relationId;
+    @Label("关系类型")
+    private Long relationId;
 
     /**
      * 对应实体
