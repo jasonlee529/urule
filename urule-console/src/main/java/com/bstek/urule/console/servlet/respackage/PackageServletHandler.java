@@ -34,11 +34,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bstek.urule.console.util.UpdateFileHttpHandler;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Row;
@@ -78,6 +80,9 @@ import com.bstek.urule.runtime.KnowledgeSessionFactory;
 import com.bstek.urule.runtime.cache.CacheUtils;
 import com.bstek.urule.runtime.response.ExecutionResponse;
 import com.bstek.urule.runtime.response.ExecutionResponseImpl;
+
+import static com.bstek.urule.console.config.UruleContants.KM_SERVER;
+import static com.bstek.urule.console.util.HttpUtils.findKmServerByName;
 
 /**
  * @author Jacky.gao
@@ -275,8 +280,28 @@ public class PackageServletHandler extends RenderPageServletHandler {
 		KnowledgeBase knowledgeBase= buildKnowledgeBase(req);
 		KnowledgePackage knowledgePackage=knowledgeBase.getKnowledgePackage();
 		CacheUtils.getKnowledgeCache().putKnowledge(packageId, knowledgePackage);
-		Map<String,Object> map=new HashMap<String,Object>();
+		Map<String,Object> map=new 	HashMap<String,Object>();
 		writeObjectToJson(resp, map);
+	}
+
+	/**
+	 * 改造重加载接口, 测试中(@JsonIgnore问题)
+	 * @param req
+	 * @param resp
+	 * @throws Exception
+	 */
+	public void buildKnowledgeCache(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		String project=req.getParameter("project");
+		project=Utils.decodeURL(project);
+		String packageId=project+"/"+Utils.decodeURL(req.getParameter("packageId"));
+		if(packageId.startsWith("/")){
+			packageId=packageId.substring(1,packageId.length());
+		}
+		KnowledgeBase knowledgeBase= buildKnowledgeBase(req);
+		KnowledgePackage knowledgePackage=knowledgeBase.getKnowledgePackage();
+		Map<String,Object> map=new HashMap<String,Object>();
+		writeObjectToJson(resp, knowledgePackage);
+
 	}
 	
 	public void loadForTestVariableCategories(HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -318,6 +343,19 @@ public class PackageServletHandler extends RenderPageServletHandler {
 		xml=Utils.decodeURL(xml);
 		User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
 		repositoryService.saveFile(path, xml, false,null,user);
+
+		// post请求知识库服务, 根据项目名称区分ip地址
+		String kmServerAddress = KM_SERVER.get(project.substring(1));
+		if (kmServerAddress == null) {
+			return;
+		}
+		Map<String, Object> data = new HashMap<>();
+		data.put("name", path);
+		data.put("content", xml);
+		// 改为异步回调远程请求
+		UpdateFileHttpHandler httpHandler = new UpdateFileHttpHandler(kmServerAddress + "/rule/urule/updatePackage", data);
+		new Thread(httpHandler, "异步线程 ["+data.get("name")+"] 回调知识库地址 : " + kmServerAddress + "/rule/urule/updatePackage")
+				.start();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -540,7 +578,7 @@ public class PackageServletHandler extends RenderPageServletHandler {
 		Map<VariableCategory,Object> facts=new HashMap<VariableCategory,Object>();
 		for(VariableCategory vc:variableCategories){
 			String clazz=vc.getClazz();
-			Object entity=null;
+			Object entity;
 			if(vc.getName().equals(VariableCategory.PARAM_CATEGORY)){
 				entity=new HashMap<String,Object>();
 			}else{
@@ -567,7 +605,7 @@ public class PackageServletHandler extends RenderPageServletHandler {
 				session.insert(obj);				
 			}
 		}
-		ExecutionResponse response=null;
+		ExecutionResponse response ;
 		if(StringUtils.isNotEmpty(flowId)){
 			if(parameters!=null){
 				response=session.startProcess(flowId,parameters);
@@ -588,6 +626,7 @@ public class PackageServletHandler extends RenderPageServletHandler {
 			}
 			if(obj instanceof Map && !(obj instanceof GeneralEntity)){
 				obj=session.getParameters();
+
 			}
 			for(Variable var:vc.getVariables()){
 				buildVariableValue(obj, var);

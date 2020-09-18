@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.bstek.urule.console.servlet.common;
 
+import cn.infisa.tools.rule.urule.entity.UruleXml;
 import cn.infisa.tools.rule.urule.service.UruleXmlService;
 import com.bstek.urule.RuleException;
 import com.bstek.urule.Utils;
@@ -26,6 +27,7 @@ import com.bstek.urule.console.repository.RepositoryService;
 import com.bstek.urule.console.repository.model.FileType;
 import com.bstek.urule.console.servlet.RenderPageServletHandler;
 import com.bstek.urule.console.servlet.RequestContext;
+import com.bstek.urule.console.util.UpdateFileHttpHandler;
 import com.bstek.urule.dsl.RuleParserLexer;
 import com.bstek.urule.dsl.RuleParserParser;
 import com.bstek.urule.model.function.FunctionDescriptor;
@@ -33,6 +35,7 @@ import com.bstek.urule.model.library.action.ActionLibrary;
 import com.bstek.urule.model.library.action.SpringBean;
 import com.bstek.urule.parse.deserializer.*;
 import com.bstek.urule.runtime.BuiltInActionLibraryBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.apache.commons.lang.StringUtils;
@@ -48,14 +51,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
+import static com.bstek.urule.console.config.UruleContants.KM_SERVER;
+import static com.bstek.urule.console.util.HttpUtils.*;
 
 /**
  * @author Jacky.gao
  * @since 2016年7月25日
  */
+@Slf4j
 public class CommonServletHandler extends RenderPageServletHandler {
     private RepositoryService repositoryService;
     private UruleXmlService uruleXmlService;
@@ -80,12 +85,28 @@ public class CommonServletHandler extends RenderPageServletHandler {
         String versionComment = req.getParameter("versionComment");
         Boolean newVersion = Boolean.valueOf(req.getParameter("newVersion"));
         User user = EnvironmentUtils.getLoginUser(new RequestContext(req, resp));
+        UruleXml xml;
         try {
             repositoryService.saveFile(file, content, newVersion, versionComment, user);
-            uruleXmlService.saveFile(file, content, newVersion, versionComment, user);
+            xml = uruleXmlService.saveFile(file, content, newVersion, versionComment, user);
         } catch (Exception ex) {
             throw new RuleException(ex);
         }
+        // post请求知识库服务, 根据项目名称区分ip地址
+        String kmServerAddress = findKmServerByName(xml.getName());
+        if (kmServerAddress == null) {
+            return;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", xml.getName());
+        data.put("content", xml.getContent());
+        data.put("version", xml.getVersion());
+        // 改为异步回调远程请求
+        UpdateFileHttpHandler httpHandler = new UpdateFileHttpHandler(kmServerAddress + "/rule/urule/update", data);
+        new Thread(httpHandler, "异步线程 ["+data.get("name")+"] 回调知识库地址 : " + kmServerAddress + "/rule/urule/update")
+        .start();
+//        log.warn("发送规则保存请求, 地址为: " + kmServerAddress + "/rule/urule/update");
+//        doPostForm(kmServerAddress + "/rule/urule/update", data);
     }
 
     public void loadReferenceFiles(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

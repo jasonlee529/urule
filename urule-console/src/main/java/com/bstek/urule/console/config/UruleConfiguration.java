@@ -19,7 +19,13 @@ import org.springframework.context.annotation.ImportResource;
 @Slf4j
 @Configuration
 @ImportResource({"classpath:context.xml"})
-public class UruleConfig {
-
-
+public class UruleConfiguration {
+    /**
+     * 跨域问题解决
+     * @return
+     */
+    @Bean
+    public KmSimpleCORSFilter simpleCORSFilter() {
+        return new KmSimpleCORSFilter();
+    }
 }
