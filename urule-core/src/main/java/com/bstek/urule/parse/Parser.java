@@ -18,6 +18,7 @@ package com.bstek.urule.parse;
 import org.dom4j.Element;
 
 /**
+ * 解析xml到antlr4语法
  * @author Jacky.gao
  * @since 2014年12月23日
  */

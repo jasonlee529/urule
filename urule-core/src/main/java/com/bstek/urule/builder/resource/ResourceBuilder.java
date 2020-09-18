@@ -19,6 +19,7 @@ import org.dom4j.Element;
 
 
 /**
+ * 解析规则，从xml中解析为规则模型
  * @author Jacky.gao
  * @since 2014年12月22日
  */

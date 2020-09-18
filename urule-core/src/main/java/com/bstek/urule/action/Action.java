@@ -21,6 +21,7 @@ import java.util.Map;
 import com.bstek.urule.runtime.rete.Context;
 
 /**
+ * 动作接口
  * @author Jacky.gao
  * @since 2014年12月22日
  */
