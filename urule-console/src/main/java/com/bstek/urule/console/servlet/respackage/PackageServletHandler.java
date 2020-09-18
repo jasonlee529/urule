@@ -287,6 +287,7 @@ public class PackageServletHandler extends RenderPageServletHandler {
 	}
 	
 	private KnowledgeBase buildKnowledgeBase(HttpServletRequest req) throws IOException{
+		//1. 解析参数，规则文件名称及版本
 		String files=req.getParameter("files");
 		files=Utils.decodeURL(files);
 		ResourceBase resourceBase=knowledgeBuilder.newResourceBase();
@@ -300,7 +301,9 @@ public class PackageServletHandler extends RenderPageServletHandler {
 			}
 			resourceBase.addResource(path,version);
 		}
+		//2. 加载规则
 		KnowledgeBase knowledgeBase=knowledgeBuilder.buildKnowledgeBase(resourceBase);
+		//3. 添加缓存
 		httpSessionKnowledgeCache.remove(req, KB_KEY);
 		httpSessionKnowledgeCache.put(req, KB_KEY, knowledgeBase);
 		return knowledgeBase;
