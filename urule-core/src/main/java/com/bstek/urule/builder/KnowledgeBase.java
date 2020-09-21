@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2017 Bstek
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -33,64 +33,87 @@ import com.bstek.urule.runtime.KnowledgePackageImpl;
  * @since 2014年12月22日
  */
 public class KnowledgeBase {
-	private ResourceLibrary resourceLibrary;
-	private Map<String,FlowDefinition> flowMap;
-	private Rete rete;
-	private KnowledgePackageImpl knowledgePackage;
-	private List<Rule> noLhsRules;
-	public KnowledgeBase(Rete rete) {
-		this(rete, null, null);
-	}
-	protected KnowledgeBase(Rete rete,Map<String,FlowDefinition> flowMap,List<Rule> noLhsRules) {
-		this.rete=rete;
-		this.resourceLibrary=rete.getResourceLibrary();
-		this.flowMap=flowMap;
-		this.noLhsRules=noLhsRules;
-	}
-	
-	public KnowledgePackage getKnowledgePackage(){
-		if(knowledgePackage!=null){
-			return knowledgePackage;
-		}
-		knowledgePackage=new KnowledgePackageImpl();
-		knowledgePackage.setRete(rete);
-		knowledgePackage.setNoLhsRules(noLhsRules);
-		knowledgePackage.setFlowMap(flowMap);
-		knowledgePackage.buildWithElseRules();
-		
-		Map<String,String> variableCategoryMap=new HashMap<String,String>();
-		knowledgePackage.setVariableCategoryMap(variableCategoryMap);
-		List<VariableCategory> variableCategories=resourceLibrary.getVariableCategories();
-		Map<String,String> parameters=new HashMap<String,String>();
-		knowledgePackage.setParameters(parameters);
-		for(VariableCategory category:variableCategories){
-			String name=category.getName();
-			variableCategoryMap.put(name, category.getClazz());
-			if(name.equals(VariableCategory.PARAM_CATEGORY)){
-				List<Variable> variables=category.getVariables();
-				if(variables==null || variables.size()==0){
-					continue;
-				}
-				for(Variable var:variables){
-					parameters.put(var.getName(), var.getType().name());
-				}
-			}
-		}
-		return knowledgePackage;
-	}
-	
-	
-	public List<Rule> getNoLhsRules() {
-		return noLhsRules;
+    // 新增变量库列表, 用于汇总规则流中, 使用到的所有变量信息
+    private List<VariableCategory> variableLibrary;
+    private ResourceLibrary resourceLibrary;
+    private Map<String, FlowDefinition> flowMap;
+    private Rete rete;
+    private KnowledgePackageImpl knowledgePackage;
+    private List<Rule> noLhsRules;
+
+    public KnowledgeBase(Rete rete) {
+        this(rete, null, null);
+    }
+
+    protected KnowledgeBase(Rete rete, Map<String, FlowDefinition> flowMap, List<Rule> noLhsRules) {
+        this.rete = rete;
+        this.resourceLibrary = rete.getResourceLibrary();
+        this.flowMap = flowMap;
+        this.noLhsRules = noLhsRules;
+    }
+
+    // 扩展构造器
+    protected KnowledgeBase(Rete rete, Map<String, FlowDefinition> flowMap, List<Rule> noLhsRules, List<VariableCategory> variableLibrary) {
+        this.rete = rete;
+        this.resourceLibrary = rete.getResourceLibrary();
+        this.flowMap = flowMap;
+        this.noLhsRules = noLhsRules;
+        this.variableLibrary = variableLibrary;
+    }
+
+    public KnowledgePackage getKnowledgePackage() {
+        if (knowledgePackage != null) {
+            return knowledgePackage;
+        }
+        knowledgePackage = new KnowledgePackageImpl();
+        knowledgePackage.setRete(rete);
+        knowledgePackage.setNoLhsRules(noLhsRules);
+        knowledgePackage.setFlowMap(flowMap);
+        knowledgePackage.buildWithElseRules();
+
+        Map<String, String> variableCategoryMap = new HashMap<String, String>();
+        knowledgePackage.setVariableCategoryMap(variableCategoryMap);
+        List<VariableCategory> variableCategories = resourceLibrary.getVariableCategories();
+        Map<String, String> parameters = new HashMap<String, String>();
+        knowledgePackage.setParameters(parameters);
+        for (VariableCategory category : variableCategories) {
+            String name = category.getName();
+            variableCategoryMap.put(name, category.getClazz());
+            if (name.equals(VariableCategory.PARAM_CATEGORY)) {
+                List<Variable> variables = category.getVariables();
+                if (variables == null || variables.size() == 0) {
+                    continue;
+                }
+                for (Variable var : variables) {
+                    parameters.put(var.getName(), var.getType().name());
+                }
+            }
+        }
+        return knowledgePackage;
+    }
+
+
+    public List<Rule> getNoLhsRules() {
+        return noLhsRules;
+    }
+
+    public Rete getRete() {
+        return rete;
+    }
+
+    public ResourceLibrary getResourceLibrary() {
+        return resourceLibrary;
+    }
+
+    public Map<String, FlowDefinition> getFlowMap() {
+        return flowMap;
+    }
+
+	public List<VariableCategory> getVariableLibrary() {
+		return variableLibrary;
 	}
 
-	public Rete getRete() {
-		return rete;
-	}
-	public ResourceLibrary getResourceLibrary() {
-		return resourceLibrary;
-	}
-	public Map<String, FlowDefinition> getFlowMap() {
-		return flowMap;
+	public void setVariableLibrary(List<VariableCategory> variableLibrary) {
+		this.variableLibrary = variableLibrary;
 	}
 }

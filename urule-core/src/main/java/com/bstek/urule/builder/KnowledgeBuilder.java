@@ -16,11 +16,9 @@
 package com.bstek.urule.builder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.bstek.urule.model.library.variable.VariableCategory;
 import org.dom4j.Element;
 
 import com.bstek.urule.builder.resource.Resource;
@@ -50,7 +48,13 @@ import com.bstek.urule.runtime.service.KnowledgePackageService;
  * @since 2014年12月22日
  */
 public class KnowledgeBuilder extends AbstractBuilder{
-	private ResourceLibraryBuilder resourceLibraryBuilder;
+    // 新增一个线程变量池, 用于在每次执行时, 标记线程id
+    public static ThreadLocal<String> threadLocalId = new ThreadLocal<>();
+    public static final String KM_BASE_VARIABLE = "tagValue_1";
+    // 通过map缓存规则集中用到的标签信息, list为去重后的变量字段列表
+    public static Map<String, List<VariableCategory>> threadVariableLibrary = new HashMap<>();
+
+    private ResourceLibraryBuilder resourceLibraryBuilder;
 	private ReteBuilder reteBuilder;
 	private RulesRebuilder rulesRebuilder;
 	private DecisionTreeRulesBuilder decisionTreeRulesBuilder;
@@ -59,6 +63,14 @@ public class KnowledgeBuilder extends AbstractBuilder{
 	private DSLRuleSetBuilder dslRuleSetBuilder;
 	public static final String BEAN_ID="urule.knowledgeBuilder";
 	public KnowledgeBase buildKnowledgeBase(ResourceBase resourceBase) throws IOException{
+		// 初始化动态变量库
+		String uuid = UUID.randomUUID().toString();
+		threadLocalId.set(uuid);
+		threadVariableLibrary.put(uuid, new ArrayList<VariableCategory>());
+		VariableCategory threadVariableCategory = new VariableCategory();
+		threadVariableCategory.setName("实例数据");
+		threadVariableCategory.setClazz(KM_BASE_VARIABLE);
+		threadVariableLibrary.get(threadLocalId.get()).add(threadVariableCategory);
 
 		List<Rule> rules=new ArrayList<Rule>();
 		Map<String,Library> libMap=new HashMap<String,Library>();
@@ -89,7 +101,7 @@ public class KnowledgeBuilder extends AbstractBuilder{
 							if(rule.getEnabled()!=null && rule.getEnabled()==false){
 								continue;
 							}
-							rules.add(rule);							
+							rules.add(rule);
 						}
 					}
 				}else if(type.equals(ResourceType.DecisionTree)){
@@ -98,7 +110,7 @@ public class KnowledgeBuilder extends AbstractBuilder{
 					RuleSet ruleSet=decisionTreeRulesBuilder.buildRules(tree);
 					addToLibraryMap(libMap,ruleSet.getLibraries());
 					if(ruleSet.getRules()!=null){
-						rules.addAll(ruleSet.getRules());							
+						rules.addAll(ruleSet.getRules());
 					}
 				}else if(type.equals(ResourceType.DecisionTable)){
 					DecisionTable table=(DecisionTable)object;
@@ -129,9 +141,13 @@ public class KnowledgeBuilder extends AbstractBuilder{
 		ResourceLibrary resourceLibrary=resourceLibraryBuilder.buildResourceLibrary(libMap.values());
 		buildLoopRules(rules, resourceLibrary);
 		Rete rete=reteBuilder.buildRete(rules, resourceLibrary);
-		return new KnowledgeBase(rete,flowMap,retriveNoLhsRules(rules));
+		// 从缓存中获取, 清理缓存
+        List<VariableCategory> variableCategories = threadVariableLibrary.get(threadLocalId.get());
+        threadVariableLibrary.remove(threadLocalId.get());
+		threadLocalId.remove();
+		return new KnowledgeBase(rete,flowMap,retriveNoLhsRules(rules),variableCategories);
 	}
-	
+
 	private void buildLoopRules(List<Rule> rules,ResourceLibrary resourceLibrary){
 		for(Rule rule:rules){
 			if(!(rule instanceof LoopRule)){
@@ -145,7 +161,7 @@ public class KnowledgeBuilder extends AbstractBuilder{
 			loopRule.setKnowledgePackageWrapper(knowledgeWrapper);
 		}
 	}
-	
+
 	private List<Rule> buildRules(LoopRule loopRule){
 		Rule rule=new Rule();
 		rule.setDebug(loopRule.getDebug());
@@ -168,7 +184,7 @@ public class KnowledgeBuilder extends AbstractBuilder{
 		Rete rete=reteBuilder.buildRete(rules, resourceLibrary);
 		return new KnowledgeBase(rete,null,retriveNoLhsRules(rules));
 	}
-	
+
 	private List<Rule> retriveNoLhsRules(List<Rule> rules) {
 		List<Rule> noLhsRules=new ArrayList<Rule>();
 		for(Rule rule:rules){
@@ -179,7 +195,7 @@ public class KnowledgeBuilder extends AbstractBuilder{
 		}
 		return noLhsRules;
 	}
-	
+
 	private void addToLibraryMap(Map<String,Library> map,List<Library> libraries){
 		if(libraries==null){
 			return;
@@ -192,11 +208,11 @@ public class KnowledgeBuilder extends AbstractBuilder{
 			map.put(path, lib);
 		}
 	}
-	
+
 	public void setRulesRebuilder(RulesRebuilder rulesRebuilder) {
 		this.rulesRebuilder = rulesRebuilder;
 	}
-	
+
 	public void setReteBuilder(ReteBuilder reteBuilder) {
 		this.reteBuilder = reteBuilder;
 	}
