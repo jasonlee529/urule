@@ -26,6 +26,7 @@ import com.bstek.urule.RuleException;
 import com.bstek.urule.model.rule.Rule;
 
 /**
+ * 规则集核心解析器, 判断是if/then/else的种类, 然后分别调用对应解析器
  * @author Jacky.gao
  * @since 2016年5月31日
  */
@@ -34,6 +35,7 @@ public abstract class AbstractRuleParser<T> implements Parser<T> {
 	protected RhsParser rhsParser;
 	private OtherParser otherParser;
 	public void parseRule(Rule rule,Element element) {
+		// 先解析属性配置
 		rule.setName(element.attributeValue("name"));
 		String salience=element.attributeValue("salience");
 		if(StringUtils.isNotEmpty(salience)){
@@ -75,6 +77,7 @@ public abstract class AbstractRuleParser<T> implements Parser<T> {
 			rule.setAutoFocus(Boolean.valueOf(autoFocus));
 		}
 		rule.setRuleflowGroup(element.attributeValue("ruleflow-group"));
+		// 再解析规则语句
 		for(Object obj:element.elements()){
 			if(obj==null || !(obj instanceof Element)){
 				continue;

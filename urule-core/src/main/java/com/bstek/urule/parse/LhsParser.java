@@ -26,6 +26,7 @@ import com.bstek.urule.model.rule.lhs.Criterion;
 import com.bstek.urule.model.rule.lhs.Lhs;
 
 /**
+ * if语句核心解析器
  * @author Jacky.gao
  * @since 2014年12月23日
  */

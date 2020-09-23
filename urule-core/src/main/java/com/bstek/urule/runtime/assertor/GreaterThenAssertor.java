@@ -16,8 +16,7 @@
 package com.bstek.urule.runtime.assertor;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 import com.bstek.urule.Utils;
 import com.bstek.urule.model.library.Datatype;
@@ -44,6 +43,8 @@ public class GreaterThenAssertor implements Assertor {
 			if(result==1){
 				return true;
 			}
+		} else if (datatype.equals(Datatype.List)) {
+			return developEval(left, right, datatype);
 		}else{
 			BigDecimal leftNumber=Utils.toBigDecimal(left);
 			BigDecimal rightNumber=Utils.toBigDecimal(right);
@@ -57,5 +58,33 @@ public class GreaterThenAssertor implements Assertor {
 
 	public boolean support(Op op) {
 		return op.equals(Op.GreaterThen);
+	}
+
+	// 扩展类型比较
+	private boolean developEval(Object left, Object right, Datatype datatype) {
+		if (right instanceof Date) {
+			Date rightDate = (Date) Datatype.Date.convert(right);
+			for (Object obj : (List) left) {
+				Date leftDate = (Date) Datatype.Date.convert(obj);
+				Calendar leftCalendar = Calendar.getInstance();
+				leftCalendar.setTime(leftDate);
+				Calendar rightCalendar = Calendar.getInstance();
+				rightCalendar.setTime(rightDate);
+				int result = leftCalendar.compareTo(rightCalendar);
+				if (result == 1) {
+					return true;
+				}
+			}
+		} else {
+			BigDecimal rightNumber = Utils.toBigDecimal(right);
+			for (Object obj : (List) left) {
+				BigDecimal leftNumber = Utils.toBigDecimal(obj);
+				int result = leftNumber.compareTo(rightNumber);
+				if (result == 1) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

@@ -50,6 +50,7 @@ public class ValueParser extends AbstractParser<Value> {
 			if(StringUtils.isNotEmpty(content)){
 				sv.setContent(StringEscapeUtils.unescapeXml(content));
 			}
+
 			av=sv;
 		}else if(type.equals(ValueType.Parameter)){
 			ParameterValue pv=new ParameterValue();

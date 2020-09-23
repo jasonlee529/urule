@@ -43,6 +43,9 @@ public class ListAction {
 	@ActionMethod(name="求List中所有的数字最大值")
 	@ActionMethodParameter(names={"包含所有数字的集合对象"})
 	public Number max(List<Object> list){
+		if(list.size()==0){
+			throw new RuleException("列表数据为空!");
+		}
 		double max=Double.MIN_VALUE;
 		for(Object obj:list){
 			BigDecimal v=Utils.toBigDecimal(obj);
@@ -127,7 +130,7 @@ public class ListAction {
 						return b1.compareTo(b2);
 					}else{
 						return b2.compareTo(b1);
-					}
+					 }
 				}
 				return 0;
 			}
@@ -174,4 +177,5 @@ public class ListAction {
 	public boolean isEmpty(List<Object> list){
 		return list.isEmpty();
 	}
+
 }

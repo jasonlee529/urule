@@ -28,6 +28,7 @@ import com.bstek.urule.action.Action;
 import com.bstek.urule.model.rule.Rhs;
 
 /**
+ * then语句核心解析器,
  * @author Jacky.gao
  * @since 2014年12月23日
  */

@@ -22,6 +22,7 @@ import com.bstek.urule.model.rule.lhs.Criteria;
 import com.bstek.urule.model.rule.lhs.Criterion;
 
 /**
+ * 条件解析器, 解析比较逻辑左侧的内容与右侧的值内容
  * @author Jacky.gao
  * @since 2014年12月23日
  */

@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationContextAware;
 import com.bstek.urule.model.rule.Other;
 
 /**
+ * else解析器
  * @author Jacky.gao
  * @since 2014年12月23日
  */
