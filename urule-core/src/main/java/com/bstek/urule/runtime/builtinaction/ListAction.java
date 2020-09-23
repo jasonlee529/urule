@@ -40,9 +40,9 @@ public class ListAction {
 		return list.size();
 	}
 	
-	@ActionMethod(name="求List中所有的数字最大值")
-	@ActionMethodParameter(names={"包含所有数字的集合对象"})
-	public Number max(List<Object> list){
+	@ActionMethod(name="求List中的最大值")
+	@ActionMethodParameter(names={"集合对象","索引对象"})
+	public Object max(List<Object> list,List<Integer> list1){
 		if(list.size()==0){
 			throw new RuleException("列表数据为空!");
 		}
@@ -54,9 +54,9 @@ public class ListAction {
 		return max;
 	}
 	
-	@ActionMethod(name="求List中所有的数字最小值")
-	@ActionMethodParameter(names={"包含所有数字的集合对象"})
-	public Number min(List<Object> list){
+	@ActionMethod(name="求List中的最小值")
+	@ActionMethodParameter(names={"集合对象","索引对象"})
+	public Object min(List<Object> list,List<Integer> list1){
 		if(list.size()==0){
 			throw new RuleException("Number list can not be null when compute min value from list.");
 		}
@@ -176,6 +176,15 @@ public class ListAction {
 	@ActionMethodParameter(names={"集合对象"})
 	public boolean isEmpty(List<Object> list){
 		return list.isEmpty();
+	}
+
+	@ActionMethod(name="List过滤(返回索引列表)")
+	@ActionMethodParameter(names={"集合对象","逻辑符号(大于或小于)","比较值"})
+	public List<Integer> filterByRule(List<Object> list,String rule,String filterValue){
+		if (!rule.startsWith("<") && !rule.startsWith(">")) {
+			return new ArrayList<>();
+		}
+		return new ArrayList<>();
 	}
 
 }
