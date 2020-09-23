@@ -497,7 +497,7 @@ public class RulesRebuilder {
                     part.setDatatype(var.getType());
                 } else {
                     // 判断是否为实例变量字段, 若是, 则塞个字段进去
-                    if (threadVariableCategory != null && threadVariableCategory.getName().equals(variableCategory)) {
+                    if ("实例数据".equals(variableCategory)) {
                         todo:
                         for (VariableCategory c : variableCategories) {
                             if (!c.getName().equals(variableCategory)) {
@@ -514,7 +514,10 @@ public class RulesRebuilder {
                             var0.setName(variableName);
                             var0.setLabel(variableLabel);
                             var0.setType(Datatype.String);
-                            threadVariableCategory.addVariable(var0);
+                            c.addVariable(var0);
+                            if (threadVariableCategory != null) {
+                                threadVariableCategory.addVariable(var0);
+                            }
                         }
                     }
 
