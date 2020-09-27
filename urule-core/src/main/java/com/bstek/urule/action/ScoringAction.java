@@ -24,6 +24,7 @@ import com.bstek.urule.runtime.rete.Context;
 import com.bstek.urule.runtime.rete.ValueCompute;
 
 /**
+ * 评分动作执行
  * @author Jacky.gao
  * @since 2016年9月26日
  */

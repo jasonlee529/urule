@@ -21,6 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 定义在动作库里面的beanId
  * @author Jacky.gao
  * @since 2015年3月27日
  */

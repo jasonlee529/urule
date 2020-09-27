@@ -22,6 +22,7 @@ import com.bstek.urule.action.ExecuteCommonFunctionAction;
 import com.bstek.urule.model.rule.lhs.CommonFunctionParameter;
 
 /**
+ * 通用函数动作解析
  * @author Jacky.gao
  * @since 2015年7月31日
  */

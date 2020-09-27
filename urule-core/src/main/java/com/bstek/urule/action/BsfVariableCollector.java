@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationContextAware;
 import com.bstek.urule.runtime.rete.Context;
 
 /**
+ * BSF (Bean Scripting Framework) 是一组 Java 的类用来在 Java 的程序中支持脚本语言，可在脚本语言中访问 Java 的对象和方法
  * @author Jacky.gao
  * @since 2015年3月18日
  */
